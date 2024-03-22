@@ -1,7 +1,7 @@
 # Pick'Ems Bot
 ## About
 This is a discord bot used to track Pickems for the CS2 Copenhagen major \
-Data is being scraped from [Liquipedia](https://liquipedia.net/counterstrike/PGL/2024/Copenhagen/) \
+Data is being scraped from [Liquipedia](https://liquipedia.net/counterstrike/PGL/2024/Copenhagen) \
 The data scraping is relatively hard coded to the event however it could be modified for other events easily provided the Liquipedia page is a similar format \
 The code is by no means efficient. Several methods were copy pasted instead of making it a function to get the results. No caching of matches / results is being done locally which means concurrent requests will all rescrape the data. Obviously this could be more efficient but I couldn't be bothered given its usage is currently private.
 
