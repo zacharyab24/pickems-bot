@@ -93,10 +93,12 @@ async def check(ctx):
     table = soup.find(class_="swisstable")
 
     teams = {}
-
+    formatted_teams = {}
     for row in table:
         for col in row:
-            team = col.find_next(class_="team-template-text").text.lower()
+            team = col.find_next(class_="team-template-text").text
+            formatted_teams[team.lower()] = team
+            team = team.lower()
             score = col.find_next("b").string
             if score == "-":
                 score = "0-0"
@@ -130,7 +132,6 @@ async def check(ctx):
     response=f"<@{ctx.author.id}>'s picks are:\n"
     response+="[3-0]\n"
     for i in _3_0:
-        i = i.lower()
         score = str(teams[i])
         wins = int(score[0])
         loses = int(score[2])
@@ -144,11 +145,10 @@ async def check(ctx):
         else:
             result = "[Succeeded]"
             succeeded += 1
-        response += f"{i} {teams[i]} {result}\n"
+        response += f"{formatted_teams[i]}: {teams[i]} {result}\n"
 
     response += "\n[3-1, 3-2]\n"
     for i in _3_1_2:
-        i = i.lower()
         score = str(teams[i])
         wins = int(score[0])
         loses = int(score[2])
@@ -163,11 +163,10 @@ async def check(ctx):
             result = "[Succeeded]"
             succeeded += 1
         
-        response += f"{i} {teams[i]} {result}\n"
+        response += f"{formatted_teams[i]}: {teams[i]} {result}\n"
 
     response += "\n[0-3]\n"
     for i in _0_3:
-        i = i.lower()
         score = str(teams[i])
         wins = int(score[0])
         loses = int(score[2])
@@ -181,8 +180,7 @@ async def check(ctx):
         else:
             result = "[Succeeded]"
             succeeded += 1
-        
-        response += f"{i} {teams[i]} {result}\n"
+        response += f"{formatted_teams[i]}: {teams[i]} {result}\n"
 
     response += f"\nSucceeded: {succeeded}, Failed: {failed}, Pending: {pending}"
     await ctx.channel.send(response)
@@ -236,67 +234,70 @@ async def leaderboard(ctx):
         succeeded = 0
         pending = 0
         failed = 0
-        try:
-            _3_0 = pickems['3-0']
-            for i in _3_0:
-                i = i.lower()
-            _0_3 = pickems['0-3']
-            for i in _0_3:
-                i = i.lower()
-            _3_1_2 = pickems['advance']
-            for i in _3_1_2:
-                i = i.lower()
+        _3_0 = pickems['3-0']
+        for i in _3_0:
+            i = i.lower()
+        _0_3 = pickems['0-3']
+        for i in _0_3:
+            i = i.lower()
+        _3_1_2 = pickems['advance']
+        for i in _3_1_2:
+            i = i.lower()
 
-            for i in _3_0:
-                i = i.lower()
-                score = str(teams[i])
-                wins = int(score[0])
-                loses = int(score[2])
+        for i in _3_0:
+            i = i.lower()
+            score = str(teams[i])
+            wins = int(score[0])
+            loses = int(score[2])
 
-                if loses >= 1:
-                    failed += 1
-                elif wins != 3:
-                    pending += 1
-                else:
-                    succeeded += 1
+            if loses >= 1:
+                failed += 1
+            elif wins != 3:
+                pending += 1
+            else:
+                succeeded += 1
 
-            for i in _3_1_2:
-                i = i.lower()
-                wins = int(score[0])
-                loses = int(score[2])
+        for i in _3_1_2:
+            i = i.lower()
+            wins = int(score[0])
+            loses = int(score[2])
 
-                if loses == 3 or (wins == 3 and loses == 0):
-                    failed += 1
-                elif wins < 3:
-                    pending += 1
-                else:
-                    succeeded += 1
-                
-            for i in _0_3:
-                i = i.lower()
-                score = str(teams[i])
-                wins = int(score[0])
-                loses = int(score[2])
+            if loses == 3 or (wins == 3 and loses == 0):
+                failed += 1
+            elif wins < 3:
+                pending += 1
+            else:
+                succeeded += 1
+            
+        for i in _0_3:
+            i = i.lower()
+            score = str(teams[i])
+            wins = int(score[0])
+            loses = int(score[2])
 
-                if wins >= 1:
-                    failed += 1
-                elif loses != 3:
-                    pending += 1
-                else:
-                    succeeded += 1
+            if wins >= 1:
+                failed += 1
+            elif loses != 3:
+                pending += 1
+            else:
+                succeeded += 1
 
-            leaderboard[pickems['user']] = succeeded
-        except:
-            res += f"<@{pickems['user']}> has incorrectly configured pickems\n"
-            continue
+        score = 0 + succeeded - failed
+        li = [pickems['user'], succeeded, failed]
+        data = tuple(li)
+        leaderboard[data] = score
 
     sorted_leaderboard = sorted(leaderboard.items(), key=lambda x:x[1], reverse=True)
     sorted_leaderboard = dict(sorted_leaderboard)
     
     output = "The users with the best pickems are:\n"
     counter = 1
-    for user in sorted_leaderboard:
-        output += f"{counter}. <@{user}>, {sorted_leaderboard[user]} successes\n"
+    for data in sorted_leaderboard:
+        user = data[0]
+        successes = data[1]
+        failures = data[2]
+
+        output += f"{counter}. <@{user}>, {successes} successes, {failures} failures\n"
         counter += 1
     await ctx.channel.send(f"{output}\n{res}")
 

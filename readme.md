@@ -29,3 +29,4 @@ Added error handling for incorrect inputs
 ### v1.1
 Added upcoming match support. This may still be broken. I have to wait for today's matches to be finished to check \
 Updated help command
+Updated formatting for check command
