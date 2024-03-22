@@ -18,7 +18,7 @@ To run this bot, first install packages: `pip install -r requirements.txt` \
 Run the bot with `python bot.py` \
 Alternatively use the docker image, this will provide a persistant bot so if you close the terminal the bot doesn't go offline. \
 Build the docker image with `docker build -t pickems-bot .` \
-Run the container with docker `run pickems-bot`  
+Run the container with `docker run pickems-bot`  
 
 ## Version History
 ### v1.0
