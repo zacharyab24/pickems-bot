@@ -5,4 +5,4 @@ ADD .env .
 
 RUN pip install pymongo python-dotenv requests beautifulsoup4 discord.py python-dateutil
 
-CMD ["python", "./bot.py"]
+CMD ["python", "./finals_bot.py"]
