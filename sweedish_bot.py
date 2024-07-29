@@ -12,13 +12,15 @@ import requests
 from datetime import datetime
 from dateutil import tz
 
+load_dotenv()
+
 #mongodb stuff
-uri = "mongodb+srv://zacbower0:TLxzfkmrProauMVV@pickems.oanoj8i.mongodb.net/?retryWrites=true&w=majority&appName=Pickems"
-client = pymongo.MongoClient(uri)
+URI = os.getenv('MONGO_URI')
+print(URI)
+client = pymongo.MongoClient(URI)
 db = client.user_pickems
 
 #discordpy stuff
-load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 print(TOKEN)
 
